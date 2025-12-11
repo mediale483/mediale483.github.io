@@ -427,14 +427,9 @@
       </aside>
 
       <main class="content">
-        <!-- 여기에 본인 이메일 주소 입력 -->
         <form id="delegation-form" action="https://formsubmit.co/hani.p@daum.net" method="POST">
-          <!-- formsubmit 옵션 (필요시 수정) -->
           <input type="hidden" name="_subject" value="땡땡땡 센트럴 전자 위임장 제출" />
           <input type="hidden" name="_captcha" value="false" />
-          <!-- 제출 후 이동할 주소 (원하면 본인 GitHub Pages의 완료페이지로 변경) -->
-          <!-- <input type="hidden" name="_next" value="https://yourdomain.github.io/thanks.html" /> -->
-
           <input type="hidden" name="signature_image" id="signature-image" />
 
           <h2 class="section-title">계약자 정보</h2>
@@ -442,11 +437,8 @@
           <div class="info-row">
             <div class="field-group">
               <label>계약자 성명<span class="required">*</span></label>
-               <div class="field-inline">
-                <div class="field-group">
-                  <label style="font-size:12px;">반드시 계약자 명의로 기입해 주세요.</label>
-                  <input type="text" name="full_name" required />
-              
+              <input type="text" name="full_name" required />
+              <div class="hint">반드시 계약자 명의로 기입해 주세요.</div>
             </div>
             <div class="field-group">
               <label>계약 동·호수<span class="required">*</span></label>
@@ -486,7 +478,7 @@
                 inputmode="numeric"
                 pattern="\d{6}"
                 maxlength="6"
-                placeholder="예: 910617"
+                placeholder="예: 751225"
                 required
               />
               <div class="hint">주민등록번호 앞 6자리(숫자만 입력)</div>
@@ -533,9 +525,13 @@
               <li>이 외 상기 사항에 부대하여 수행되는 일체의 사항 및 업무(각종 외부자문 진행 등)</li>
             </ol>
             <div class="note">
-              ※ 상기 위임 사항은 아파트 입주 후 공동주택관리법 등에 따른 입주자대표회의가 구성되기 전까지 유효한 것으로 하며,
-              수분양자(483세대) 과반수 이상의 위임동의가 완료되어야 효력이 발생합니다.<br />
-              ※ 입주예정자협의회는 본 위임장의 개인정보를 절대 사적인 용도로 유출하지 않을 것을 서약합니다.
+              <strong>
+                ※ 상기 위임 사항은 아파트 입주 후 공동주택관리법 등에 따른 입주자대표회의가 구성되기 전까지 유효한 것으로 하며,
+                수분양자(483세대) 과반수 이상의 위임동의가 완료되어야 효력이 발생합니다.
+              </strong><br />
+              <strong>
+                ※ 입주예정자협의회는 본 위임장의 개인정보를 절대 사적인 용도로 유출하지 않을 것을 서약합니다.
+              </strong>
             </div>
           </div>
 
@@ -698,7 +694,6 @@
 
         const dataUrl = canvas.toDataURL("image/png");
         signatureInput.value = dataUrl;
-        // 이후에는 기본 동작대로 Formsubmit으로 전송
       });
     })();
   </script>
