@@ -442,8 +442,10 @@
           <div class="info-row">
             <div class="field-group">
               <label>계약자 성명<span class="required">*</span></label>
-              <div class="hint">반드시 계약자 명의로 기입해 주세요.</div>
-              <input type="text" name="full_name" required />
+               <div class="field-inline">
+                <div class="field-group">
+                  <label style="font-size:12px;">반드시 계약자 명의로 기입해 주세요.</label>
+                  <input type="text" name="full_name" required />
               
             </div>
             <div class="field-group">
@@ -502,15 +504,14 @@
             </div>
             <div class="field-group">
               <label>입주자 카페 ID</label>
-              <input type="text" name="cafe_id" placeholder="선택 입력" />
+              <input type="text" name="cafe_id" placeholder="네이버 카페 닉네임" />
             </div>
           </div>
 
-          <div class="subsection-title">공동명의 계약자 성명 (있는 경우에만 작성)</div>
           <div class="info-row">
             <div class="field-group">
-              <label>공동명의 계약자 성명</label>
-              <input type="text" name="co_full_name" placeholder="공동명의자 이름" />
+              <label>공동명의 계약자 성명 (있는 경우에만 작성)</label>
+              <input type="text" name="co_full_name" placeholder="공동명의자 성명" />
             </div>
           </div>
 
