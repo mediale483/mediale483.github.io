@@ -68,4 +68,665 @@
     }
 
     .sidebar {
-      background: linear-gradient(180deg, #7f1820, #a
+      background: linear-gradient(180deg, #7f1820, #a62931);
+      padding: 20px 14px;
+      color: #ffeaea;
+      font-size: 14px;
+      border-right: 1px solid #6a1219;
+    }
+
+    .sidebar-section {
+      margin-bottom: 26px;
+    }
+
+    .sidebar-section-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: #fff5f7;
+    }
+
+    .sidebar-section ul {
+      list-style: none;
+      padding-left: 4px;
+      margin: 0;
+    }
+
+    .sidebar-section li {
+      margin-bottom: 2px;
+      line-height: 1.4;
+    }
+
+    .content {
+      padding: 22px 26px 24px;
+      background: #fff;
+    }
+
+    h2.section-title {
+      font-size: 18px;
+      margin: 0 0 14px;
+      border-left: 4px solid #a62931;
+      padding-left: 8px;
+      font-weight: 600;
+      color: #3a1318;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      margin-bottom: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+    }
+
+    .field-group label {
+      margin-bottom: 4px;
+      color: #4a262a;
+      font-weight: 500;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      border-radius: 6px;
+      border: 1px solid #d6b6bc;
+      padding: 8px 10px;
+      font-size: 14px;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus,
+    .field-group select:focus {
+      outline: none;
+      border-color: #a62931;
+      box-shadow: 0 0 0 2px rgba(166, 41, 49, 0.22);
+    }
+
+    .field-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .field-inline .field-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #97757a;
+      margin-top: 2px;
+    }
+
+    .section-card {
+      border-radius: 10px;
+      border: 1px solid #e1c1c7;
+      background: #fdf7f8;
+      padding: 16px 16px 12px;
+      margin-top: 18px;
+      margin-bottom: 6px;
+    }
+
+    .section-card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #3a1318;
+    }
+
+    .section-card ol {
+      margin: 0 0 8px 18px;
+      padding-left: 16px;
+      font-size: 13px;
+      color: #543338;
+      line-height: 1.5;
+    }
+
+    .section-card li + li {
+      margin-top: 3px;
+    }
+
+    .section-card .note {
+      font-size: 12px;
+      color: #7b555a;
+      margin-top: 4px;
+    }
+
+    /* 서명 패드 */
+    .signature-wrapper {
+      margin-top: 18px;
+    }
+
+    .signature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .tab-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #3a1318;
+    }
+
+    .signature-controls {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: #777;
+      align-items: center;
+    }
+
+    .btn-ghost {
+      border: 1px solid #a62931;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.05s, color 0.15s;
+      color: #7f1820;
+    }
+
+    .btn-ghost:hover {
+      background: #f7e3e6;
+    }
+    .btn-ghost:active {
+      transform: scale(0.97);
+    }
+
+    .signature-box {
+      border-radius: 10px;
+      border: 1px dashed #d6aeb5;
+      background: #fff;
+      padding: 10px;
+    }
+
+    #signature-canvas {
+      width: 100%;
+      max-width: 100%;
+      height: 220px;
+      border-radius: 8px;
+      border: 1px solid #e2c5cb;
+      background: #fff;
+      display: block;
+      touch-action: none;
+    }
+
+    .signature-hint {
+      font-size: 12px;
+      margin-top: 6px;
+      color: #97757a;
+    }
+
+    /* 개인정보 동의 */
+    .consent-section {
+      margin-top: 22px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #543338;
+    }
+
+    .consent-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .consent-text {
+      border-radius: 10px;
+      border: 1px solid #e1c1c7;
+      background: #fffafa;
+      padding: 10px 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+
+    .consent-checks {
+      margin-top: 8px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      margin-top: 2px;
+    }
+
+    .submit-area {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .submit-area p {
+      font-size: 13px;
+      color: #6a4a4f;
+      margin-bottom: 10px;
+    }
+
+    .btn-submit {
+      display: inline-block;
+      padding: 10px 40px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #7f1820, #b4353d);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(98, 13, 21, 0.45);
+      transition: transform 0.06s, box-shadow 0.06s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(98, 13, 21, 0.55);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(98, 13, 21, 0.4);
+    }
+
+    .required {
+      color: #d63b46;
+      margin-left: 2px;
+    }
+
+    .error-message {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #c0392b;
+      text-align: left;
+    }
+
+    .subsection-title {
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a262a;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .header {
+        padding: 16px 16px 12px;
+      }
+      .header h1 {
+        font-size: 18px;
+      }
+      .info-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    // EmailJS 초기화 (본인 public key로 교체)
+    document.addEventListener("DOMContentLoaded", function () {
+      emailjs.init("YOUR_PUBLIC_KEY_HERE"); // <- EmailJS Public Key 입력
+    });
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-logo">H</div>
+      <h1>운정 디에트르 센트럴 입주예정자협의회 위임장</h1>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">수신</div>
+          <ul>
+            <li>운정 디에트르 센트럴</li>
+            <li>입주예정자협의회</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">계약자 정보</div>
+          <ul>
+            <li>계약자 성명</li>
+            <li>생년월일(앞 6자리)</li>
+            <li>휴대전화 / 이메일</li>
+            <li>계약 동·호수</li>
+            <li>입주자 카페 ID</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">공동명의</div>
+          <ul>
+            <li>공동명의 계약자</li>
+            <li>정보를 추가로</li>
+            <li>입력하실 수 있어요</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">제출 안내</div>
+          <ul>
+            <li>모든 필수항목</li>
+            <li>작성 · 동의 후</li>
+            <li>하단 버튼으로</li>
+            <li>제출 완료</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content">
+        <form id="delegation-form">
+          <!-- 기본 정보 -->
+          <h2 class="section-title">계약자 정보 (반드시 계약자명으로 기입)</h2>
+
+          <div class="info-row">
+            <div class="field-group">
+              <label>계약자 성명<span class="required">*</span></label>
+              <input type="text" name="full_name" required />
+            </div>
+            <div class="field-group">
+              <label>계약 동·호수<span class="required">*</span></label>
+              <div class="field-inline">
+                <div class="field-group">
+                  <label style="font-size:12px;">동</label>
+                  <input type="text" name="dong" required />
+                </div>
+                <div class="field-group">
+                  <label style="font-size:12px;">호</label>
+                  <input type="text" name="ho" required />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="field-group">
+              <label>생년월일<span class="required">*</span></label>
+              <input
+                type="text"
+                name="birth"
+                inputmode="numeric"
+                pattern="\d{6}"
+                maxlength="6"
+                placeholder="예: 910617"
+                required
+              />
+              <div class="hint">주민등록번호 앞 6자리(숫자만 입력)</div>
+            </div>
+            <div class="field-group">
+              <label>휴대전화 번호<span class="required">*</span></label>
+              <input type="tel" name="phone" placeholder="예: 010-0000-0000" required />
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="field-group">
+              <label>이메일 주소<span class="required">*</span></label>
+              <input type="email" name="email" placeholder="예: example@email.com" required />
+            </div>
+            <div class="field-group">
+              <label>입주자 카페 ID</label>
+              <input type="text" name="cafe_id" placeholder="선택 입력" />
+            </div>
+          </div>
+
+          <!-- 공동명의 계약자 -->
+          <div class="subsection-title">공동명의 계약자 (있는 경우에만 작성)</div>
+
+          <div class="info-row">
+            <div class="field-group">
+              <label>공동명의 계약자 성명</label>
+              <input type="text" name="co_full_name" placeholder="공동명의자 이름" />
+            </div>
+            <div class="field-group">
+              <label>공동명의자 생년월일</label>
+              <input
+                type="text"
+                name="co_birth"
+                inputmode="numeric"
+                pattern="\d{6}"
+                maxlength="6"
+                placeholder="예: 910617"
+              />
+              <div class="hint">주민등록번호 앞 6자리(숫자만 입력)</div>
+            </div>
+          </div>
+
+          <!-- 위임사항 -->
+          <div class="section-card">
+            <h3>위임 사항 안내</h3>
+            <ol>
+              <li>입주예정자의 권리·이익에 대한 업무추진 방향 설정</li>
+              <li>입주예정자협의회 회원관리(가입, 징계, 탈퇴 등)</li>
+              <li>협의회 회비의 집행 및 관리(징수, 모금, 내역증빙 등)</li>
+              <li>시행자(조합 등) 및 시공자, 관련 용역사들과의 협의 및 협상</li>
+              <li>대외홍보 및 각종 자문(각종 문자발송, 전화, 우편발송, SNS 운영 등)</li>
+              <li>금융기관, 법무사법인 등 입주 등에 필요한 각종 용역사의 입찰 및 선정에 대한 제반업무</li>
+              <li>입주민의 이익을 위한 생활용품, 가전 등의 공동구매 추진</li>
+              <li>아파트의 품질 및 상품성 개선에 대한 각종 의견 및 방안 제시</li>
+              <li>아파트 내/외부 시공 등 공사와 관련된 사항</li>
+              <li>진입로/보행로, 교통, 학교 등 주거환경 개선에 관한 사항과 관련된 제반업무</li>
+              <li>하자보수와 관련된 제반 사항(하자사항 취합 및 시행자 전달, 의견제시 등)</li>
+              <li>이 외 입주예정자들의 권익을 위한 각종 협의, 동의, 계약체결 등의 제반업무 및 의결</li>
+              <li>이 외 상기 사항에 부대하여 수행되는 일체의 사항 및 업무(각종 외부자문 진행 등)</li>
+            </ol>
+            <div class="note">
+              ※ 상기 위임 사항은 아파트 입주 후 공동주택관리법 등에 따른 입주자대표회의가 구성되기 전까지 유효한 것으로 하며,
+              수분양자(483세대) 과반수 이상의 위임동의가 완료되어야 효력이 발생합니다.<br />
+              ※ 입주예정자협의회는 본 위임장의 개인정보를 절대 사적인 용도로 유출하지 않을 것을 서약합니다.
+            </div>
+          </div>
+
+          <!-- 서명 패드 -->
+          <div class="signature-wrapper">
+            <div class="signature-header">
+              <div class="tab-label">서명 패드<span class="required">*</span></div>
+              <div class="signature-controls">
+                <button type="button" id="clear-signature" class="btn-ghost">서명패드 지우기</button>
+              </div>
+            </div>
+            <div class="signature-box">
+              <canvas id="signature-canvas"></canvas>
+              <div class="signature-hint">
+                마우스(또는 손가락/스타일러스)로 위 영역에 직접 서명해 주세요.
+              </div>
+            </div>
+            <div id="signature-error" class="error-message" style="display:none;">
+              서명을 남겨주세요.
+            </div>
+          </div>
+
+          <!-- 개인정보 동의 -->
+          <div class="consent-section">
+            <div class="consent-title">개인정보 수집 · 활용 / 제3자 제공 동의<span class="required">*</span></div>
+            <div class="consent-text">
+              <strong>1. 수집·이용 목적</strong><br />
+              - 입주예정자협의회 운영 및 상기 위임사항 수행을 위한 정보 이용 및 안내<br /><br />
+              <strong>2. 수집 항목</strong><br />
+              - 이름, 생년월일, 연락처, 이메일, 계약 동·호수, 입주자 카페 ID, 공동명의자 정보 등<br /><br />
+              <strong>3. 보유·이용 기간</strong><br />
+              - 위임장 제출일로부터 입주자대표회의 구성 시까지 보관 후 파기<br /><br />
+              <strong>4. 동의 거부 권리 및 불이익</strong><br />
+              - 정보 제공에 동의하지 않을 수 있으나, 이 경우 입주예정자협의회 안내 및 주요 공지 수신에 제한이 있을 수 있습니다.
+            </div>
+
+            <div class="consent-checks">
+              <label class="checkbox-row">
+                <input type="checkbox" id="consent-privacy" />
+                <span>상기 개인정보 수집 및 활용, 제3자 제공 내용에 동의합니다.</span>
+              </label>
+              <label class="checkbox-row">
+                <input type="checkbox" id="consent-delegation" />
+                <span>위임 내용에 동의하며, 본 위임장을 전자서명으로 제출합니다.</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="submit-area">
+            <p>상기 내용을 모두 확인하고, 전자서명에 동의하시는 경우 아래 버튼을 눌러 위임장을 제출해 주세요.</p>
+            <button type="submit" class="btn-submit">위임장 제출</button>
+            <div id="form-error" class="error-message" style="text-align:center; display:none;"></div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // ===== 서명 패드 & 폼 전송 =====
+    (function () {
+      const canvas = document.getElementById("signature-canvas");
+      const ctx = canvas.getContext("2d");
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let hasSignature = false;
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = 220;
+      }
+
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      function startDrawing(x, y) {
+        isDrawing = true;
+        hasSignature = true;
+        [lastX, lastY] = [x, y];
+      }
+
+      function drawLine(x, y) {
+        if (!isDrawing) return;
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        [lastX, lastY] = [x, y];
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+      // 마우스 이벤트
+      canvas.addEventListener("mousedown", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        startDrawing(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        drawLine(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      canvas.addEventListener("mouseup", stopDrawing);
+      canvas.addEventListener("mouseleave", stopDrawing);
+
+      // 터치 이벤트
+      canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        startDrawing(touch.clientX - rect.left, touch.clientY - rect.top);
+      });
+
+      canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        drawLine(touch.clientX - rect.left, touch.clientY - rect.top);
+      });
+
+      canvas.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        stopDrawing();
+      });
+
+      // 지우기 버튼
+      document.getElementById("clear-signature").addEventListener("click", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hasSignature = false;
+      });
+
+      // ===== 폼 전송 =====
+      const form = document.getElementById("delegation-form");
+      const formError = document.getElementById("form-error");
+      const signatureError = document.getElementById("signature-error");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        formError.style.display = "none";
+        signatureError.style.display = "none";
+
+        const consentPrivacy = document.getElementById("consent-privacy").checked;
+        const consentDelegation = document.getElementById("consent-delegation").checked;
+
+        if (!consentPrivacy || !consentDelegation) {
+          formError.textContent = "개인정보 및 위임 내용에 대한 동의 체크를 모두 완료해주세요.";
+          formError.style.display = "block";
+          return;
+        }
+
+        if (!hasSignature) {
+          signatureError.style.display = "block";
+          return;
+        }
+
+        const signatureDataUrl = canvas.toDataURL("image/png");
+
+        const formData = new FormData(form);
+        const params = {};
+        formData.forEach((value, key) => {
+          params[key] = value;
+        });
+        params.signature_image = signatureDataUrl;
+
+        emailjs
+          .send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params) // <- EmailJS 서비스/템플릿 ID 교체
+          .then(
+            function () {
+              alert("위임장이 정상적으로 제출되었습니다. 감사합니다.");
+              form.reset();
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              hasSignature = false;
+            },
+            function (error) {
+              console.error("EmailJS error:", error);
+              alert("전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+            }
+          );
+      });
+    })();
+  </script>
+</body>
+</html>
