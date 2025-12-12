@@ -1,779 +1,202 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>힐스테이트 메디알레 입주예정자협의회 위임장</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+<script>
+(function () {
+  const form = document.getElementById("delegation-form");
+  const canvas = document.getElementById("signature-canvas");
+  const ctx = canvas.getContext("2d");
+
+  let drawing = false;
+  let lastX = 0;
+  let lastY = 0;
+  let hasSignature = false;
+  let savedSignature = null;
+
+  const signatureError = document.getElementById("signature-error");
+  const formError = document.getElementById("form-error");
+
+  /* =========================
+     캔버스 초기화 (지워지지 않게)
+  ========================== */
+  function setupCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+
+    const prev = hasSignature ? canvas.toDataURL() : null;
+
+    canvas.width = rect.width * ratio;
+    canvas.height = 220 * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+
+    if (prev) restoreSignature(prev);
+  }
+
+  function restoreSignature(dataUrl) {
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = dataUrl;
+  }
+
+  setupCanvas();
+
+  /* ❌ window.resize 사용 안함 (서명 지워지는 원인)
+     ✅ ResizeObserver로 가로 변경만 감지 */
+  const ro = new ResizeObserver(() => {
+    requestAnimationFrame(setupCanvas);
+  });
+  ro.observe(canvas);
+
+  /* =========================
+     드로잉 로직
+  ========================== */
+  function start(x, y) {
+    drawing = true;
+    hasSignature = true;
+    lastX = x;
+    lastY = y;
+    hideError(signatureError);
+  }
+
+  function draw(x, y) {
+    if (!drawing) return;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    lastX = x;
+    lastY = y;
+  }
+
+  function stop() {
+    drawing = false;
+    if (hasSignature) {
+      savedSignature = canvas.toDataURL();
+    }
+  }
+
+  function pos(e) {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  /* 마우스 */
+  canvas.addEventListener("mousedown", e => {
+    const p = pos(e);
+    start(p.x, p.y);
+  });
+  canvas.addEventListener("mousemove", e => {
+    const p = pos(e);
+    draw(p.x, p.y);
+  });
+  window.addEventListener("mouseup", stop);
+
+  /* 터치 */
+  canvas.addEventListener("touchstart", e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const r = canvas.getBoundingClientRect();
+    start(t.clientX - r.left, t.clientY - r.top);
+  }, { passive:false });
+
+  canvas.addEventListener("touchmove", e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const r = canvas.getBoundingClientRect();
+    draw(t.clientX - r.left, t.clientY - r.top);
+  }, { passive:false });
+
+  canvas.addEventListener("touchend", stop, { passive:false });
+
+  /* =========================
+     서명 지우기
+  ========================== */
+  document.getElementById("clear-signature").addEventListener("click", () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasSignature = false;
+    savedSignature = null;
+    hideError(signatureError);
+  });
+
+  /* =========================
+     에러 헬퍼
+  ========================== */
+  function showError(el, msg) {
+    if (!el) return;
+    if (msg) el.textContent = msg;
+    el.style.display = "block";
+  }
+  function hideError(el) {
+    if (!el) return;
+    el.style.display = "none";
+  }
+
+  function requiredFilled() {
+    const fields = [
+      'input[name="full_name"]',
+      'input[name="dong"]',
+      'input[name="ho"]',
+      'input[name="birth"]',
+      'input[name="phone"]',
+      'input[name="email"]'
+    ];
+    return fields.every(sel => {
+      const el = document.querySelector(sel);
+      return el && el.value.trim() !== "";
+    });
+  }
+
+  function exportSignature() {
+    const out = document.createElement("canvas");
+    out.width = 800;
+    out.height = 220;
+
+    const octx = out.getContext("2d");
+    octx.fillStyle = "#fff";
+    octx.fillRect(0,0,out.width,out.height);
+    octx.drawImage(canvas, 0, 0, out.width, out.height);
+
+    return out.toDataURL("image/jpeg", 0.8);
+  }
+
+  /* =========================
+     제출 처리
+  ========================== */
+  form.addEventListener("submit", function(e){
+    hideError(formError);
+    hideError(signatureError);
+
+    const name = document.querySelector('input[name="full_name"]').value || "";
+    const dong = document.querySelector('input[name="dong"]').value || "";
+    const ho   = document.querySelector('input[name="ho"]').value || "";
+
+    document.getElementById("email-subject").value =
+      `힐스테이트 메디알레 전자 위임장 제출 - ${name} (${dong}동 ${ho}호)`;
+
+    if (!requiredFilled()) {
+      e.preventDefault();
+      showError(formError, "필수항목을 입력해 주세요.");
+      return;
     }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      max-width: 100%;
-      overflow-x: auto;
+    if (!document.getElementById("consent-privacy").checked ||
+        !document.getElementById("consent-delegation").checked) {
+      e.preventDefault();
+      showError(formError, "모든 동의사항에 체크해 주세요.");
+      return;
     }
 
-    body {
-      padding: 20px;
-      background: #f4f1f2;
+    if (!hasSignature) {
+      e.preventDefault();
+      showError(signatureError, "서명을 남겨주세요.");
+      return;
     }
 
-    .container {
-      width: 100%;
-      max-width: 980px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-
-    /* HEADER */
-    .header {
-      padding: 18px 28px 14px;
-      border-bottom: 1px solid #d5b1b7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .header-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, #7f1820, #b4353d);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      font-size: 20px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: #3a1318;
-      letter-spacing: -0.5px;
-    }
-
-    /* LAYOUT */
-    .layout {
-      display: grid;
-      grid-template-columns: 170px 1fr;
-      min-height: 600px;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      background: linear-gradient(180deg, #7f1820, #a62931);
-      padding: 20px 14px;
-      color: #ffeaea;
-      font-size: 14px;
-      border-right: 1px solid #6a1219;
-    }
-
-    .sidebar-section {
-      margin-bottom: 26px;
-    }
-
-    .sidebar-section-title {
-      font-weight: 700;
-      font-size: 15px;
-      margin-bottom: 6px;
-      color: #fff5f7;
-    }
-
-    .sidebar-section ul {
-      list-style: none;
-      padding-left: 4px;
-      margin: 0;
-    }
-
-    .sidebar-section li {
-      margin-bottom: 2px;
-      line-height: 1.4;
-    }
-
-    /* CONTENT AREA */
-    .content {
-      padding: 22px 26px 24px;
-      background: #fff;
-    }
-
-    h2.section-title {
-      font-size: 18px;
-      margin: 0 0 14px;
-      border-left: 4px solid #a62931;
-      padding-left: 8px;
-      font-weight: 600;
-      color: #3a1318;
-    }
-
-    .info-block {
-      font-size: 14px;
-      color: #4a262a;
-      margin-bottom: 18px;
-      word-break: break-word;
-    }
-
-    /* FORM FIELDS */
-    .info-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 16px;
-      margin-bottom: 10px;
-    }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      font-size: 14px;
-    }
-
-    .field-group label {
-      margin-bottom: 4px;
-      color: #4a262a;
-      font-weight: 500;
-    }
-
-    .field-group input {
-      border-radius: 6px;
-      border: 1px solid #d6b6bc;
-      padding: 8px 10px;
-      background: #fff;
-      font-size: 14px;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .field-group input:focus {
-      outline: none;
-      border-color: #a62931;
-      box-shadow: 0 0 0 2px rgba(166,41,49,0.22);
-    }
-
-    .field-inline {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .hint {
-      font-size: 12px;
-      color: #97757a;
-      margin-top: 2px;
-    }
-
-    /* SECTION CARD */
-    .section-card {
-      border-radius: 10px;
-      border: 1px solid #e1c1c7;
-      background: #fdf7f8;
-      padding: 16px 16px 12px;
-      margin-top: 18px;
-      margin-bottom: 6px;
-    }
-
-    .section-card h3 {
-      font-size: 15px;
-      font-weight: 600;
-      color: #3a1318;
-      margin: 12px 0 10px;
-    }
-
-    .section-card ol {
-      margin: 0 0 8px 20px;
-      padding-left: 8px;
-      font-size: 13px;
-      color: #543338;
-      line-height: 1.55;
-    }
-
-    .delegate-intro {
-      font-size: 13px;
-      line-height: 1.55;
-      color: #543338;
-      margin-bottom: 14px;
-    }
-
-    /* 서명 패드 */
-    .signature-wrapper {
-      margin-top: 24px;
-    }
-
-    .tab-label {
-      font-size: 15px;
-      font-weight: 600;
-      color: #3a1318;
-      margin-bottom: 8px;
-    }
-
-    .signature-box {
-      border-radius: 10px;
-      border: 1px dashed #d6aeb5;
-      background: #fff;
-      padding: 10px;
-    }
-
-    #signature-canvas {
-      width: 100%;
-      height: 220px;
-      background: #fff;
-      border-radius: 8px;
-      border: 1px solid #e2c5cb;
-      display: block;
-      touch-action: none;
-    }
-
-    .signature-hint {
-      font-size: 12px;
-      color: #97757a;
-      margin-top: 6px;
-    }
-
-    .signature-controls {
-      display: flex;
-      justify-content: flex-start;
-      margin-top: 10px;
-    }
-
-    .btn-ghost {
-      border: 1px solid #a62931;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 12px;
-      background: #fff;
-      cursor: pointer;
-      color: #7f1820;
-    }
-
-    .error-message {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #c0392b;
-      display: none;
-    }
-
-    /* 개인정보 동의 */
-    .consent-section {
-      margin-top: 28px;
-      font-size: 13px;
-      color: #543338;
-      line-height: 1.55;
-    }
-
-    .consent-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #3a1318;
-      margin-bottom: 8px;
-    }
-
-    .consent-text {
-      border-radius: 10px;
-      background: #fffafa;
-      border: 1px solid #e1c1c7;
-      padding: 12px;
-      font-size: 12px;
-      line-height: 1.55;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .checkbox-row {
-      display: flex;
-      gap: 6px;
-      font-size: 13px;
-      margin: 8px 0;
-    }
-
-    .submit-area {
-      margin-top: 28px;
-      text-align: center;
-    }
-
-    .btn-submit {
-      padding: 10px 40px;
-      border-radius: 50px;
-      border: none;
-      background: linear-gradient(135deg,#7f1820,#b4353d);
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .download-area {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #543338;
-      line-height: 1.55;
-    }
-
-    .download-link {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid #a62931;
-      color: #7f1820;
-      text-decoration: none;
-      background: #fff;
-      font-weight: 600;
-    }
-
-    .download-link:hover {
-      background: #f7e3e6;
-    }
-
-    @media (max-width:768px) {
-      body { padding: 10px; }
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
-      .info-row { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="header-logo">H</div>
-      <h1>힐스테이트 메디알레 입주예정자협의회 위임장</h1>
-    </div>
-
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">수신</div>
-          <ul>
-            <li>힐스테이트 메디알레</li>
-            <li>입주예정자협의회</li>
-          </ul>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">계약자 정보</div>
-          <ul>
-            <li>계약자 성명</li>
-            <li>생년월일(앞 6자리)</li>
-            <li>휴대전화 / 이메일</li>
-            <li>계약 동·호수</li>
-            <li>입주자 카페 ID</li>
-          </ul>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">공동명의</div>
-          <ul>
-            <li>공동명의 계약자</li>
-            <li>있을 경우만</li>
-            <li>성명 입력</li>
-          </ul>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">제출 안내</div>
-          <ul>
-            <li>필수항목 입력</li>
-            <li>전자서명 후</li>
-            <li>제출 버튼 클릭</li>
-          </ul>
-        </div>
-      </aside>
-
-      <main class="content">
-        <!-- novalidate: 모바일에서 선택항목으로 포커스 튐(브라우저 기본 유효성 포커스) 방지 -->
-        <form id="delegation-form" action="https://formsubmit.co/nively617@gmail.com" method="POST" novalidate>
-          <input type="hidden" name="_next" value="https://mediale483.github.io/thanks.html" />
-          <input type="hidden" name="_subject" id="email-subject" value="힐스테이트 메디알레 전자 위임장 제출">
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="signature_image" id="signature-image" />
-
-          <!-- 수신 -->
-          <h2 class="section-title">수신 (수임인)</h2>
-          <div class="info-block">힐스테이트 메디알레 입주예정자협의회 &lt;mail@mail.com&gt; </div>
-
-          <!-- 계약자 정보 -->
-          <h2 class="section-title">계약자 정보 (위임인)</h2>
-
-          <div class="info-row">
-            <div class="field-group">
-              <label>계약자 성명 (필수)*</label>
-              <input type="text" name="full_name" required />
-              <div class="hint">반드시 계약자 명의로 기입해 주세요.</div>
-            </div>
-
-            <div class="field-group">
-              <label>계약 동·호수 (필수)*</label>
-              <div class="field-inline">
-                <div class="field-group">
-                  <label style="font-size:12px;">동</label>
-                  <input type="text" name="dong" placeholder="예:123"
-                         oninput="this.value=this.value.replace(/[^0-9]/g,'');" required />
-                </div>
-                <div class="field-group">
-                  <label style="font-size:12px;">호</label>
-                  <input type="text" name="ho" placeholder="예:456"
-                         oninput="this.value=this.value.replace(/[^0-9]/g,'');" required />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="info-row">
-            <div class="field-group">
-              <label>생년월일 (필수)*</label>
-              <input type="text" name="birth" maxlength="6" placeholder="예: 751225"
-                     oninput="this.value=this.value.replace(/[^0-9]/g,'');" required />
-              <div class="hint">주민등록번호 앞 6자리(숫자만)</div>
-            </div>
-
-            <div class="field-group">
-              <label>휴대전화 번호 (필수)*</label>
-              <input type="tel" name="phone" placeholder="예: 010-0000-0000" required />
-            </div>
-          </div>
-
-          <div class="info-row">
-            <div class="field-group">
-              <label>이메일 (필수)*</label>
-              <input type="email" name="email" placeholder="example@email.com" required />
-            </div>
-
-            <div class="field-group">
-              <label>입주자 카페 ID (선택)</label>
-              <input type="text" name="cafe_id" placeholder="네이버 카페 닉네임" />
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label>공동명의 계약자 (있는 경우만) (선택)</label>
-            <input type="text" name="co_full_name" placeholder="공동명의자 성명" />
-          </div>
-
-          <!-- 위임 사항 -->
-          <div class="section-card">
-            <h3>위임 사항 안내</h3>
-
-            <p class="delegate-intro">
-              계약자 본인은 서울특별시 은평구 대조동 88번지 일원에 건설되는 힐스테이트 메디알레 아파트의 입주예정자로서, 
-              입주예정자협의회(입주예자협의회 구성을 위한 TF 단, 그 대표자 및 위원 일동을 포함하며 
-              이하 “수임인”이라 한다)로부터 아래 위임사항을 안내받았으며, 
-              이에 관련된 모든 제반 업무를 수임인에게 전적으로 위임할 것을 확약합니다.
-            </p>
-
-            <h3>위임 사항</h3>
-            <ol>
-              <li>입주예정자의 권리·이익에 대한 업무추진 방향 설정</li>
-              <li>입주예정자협의회 회원관리(가입, 징계, 탈퇴 등)</li>
-              <li>협의회 회비의 집행 및 관리(징수, 모금, 내역증빙 등)</li>
-              <li>시행자(조합 등) 및 시공자, 관련 용역사들과의 협의 및 협상</li>
-              <li>대외홍보 및 각종 자문(각종 문자발송, 전화, 우편발송, SNS 운영 등)</li>
-              <li>입주에 필요한 용역사(금융기관, 법무법인 등)의 입찰 및 선정에 대한 제반업무</li>
-              <li>입주민의 이익을 위한 생활용품, 가전 등의 공동구매 추진</li>
-              <li>아파트 품질·상품성 개선 관련 의견 제시</li>
-              <li>단지 내·외부 공사 및 시공 관련 사항</li>
-              <li>진입로·보행로, 교통, 학교 등 주거환경 개선에 관한 사항과 관련된 제반업무</li>
-              <li>하자보수와 관련 사항(하자 접수·취합·시행자 전달·협의 등)</li>
-              <li>이 외 입주예정자들의 권익을 위한 각종 협의·동의·계약체결 등의 제반업무 및 의결</li>
-              <li>이 외 상기 사항에 부대하여 수행되는 일체의 사항 및 업무(각종 외부자문 진행 등)</li>
-            </ol>
-
-            <h3>위임 효력 기간 및 철회</h3>
-            <div class="delegate-intro">
-              <strong>
-                ※ 본 위임은 공동주택관리법 제11조에 따른 입주자대표회의 구성 및 권한 인수·인계 완료 시점까지 유효합니다.
-              </strong><br>
-              <strong>
-                ※ 위임인은 서면 또는 전자문서로 통지하여 언제든지 위임을 철회할 수 있습니다.
-              </strong><br>
-              <strong>
-                ※ 철회 이전에 수임인이 적법하게 수행한 행위의 효력에는 영향을 미치지 않습니다.
-              </strong><br>
-              <h3>위임 효력 발생 조건</h3>
-              <strong>
-                ※ 일반분양자 483세대 중 과반수 이상의 위임 동의가 완료된 시점부터,
-                수임인은 입주예정자를 대표하여 위 위임 사항을 수행할 수 있습니다
-              </strong><br>
-              <h3>개인정보 처리 보호 서약 안내</h3>
-              <strong>
-              ※ 입주예정자협의회는 본 위임장을 통해 수집한 개인정보를
-              「개인정보 보호법」 및 관련 법령에 따라 안전하게 관리하며,
-              어떠한 사적 용도 또는 부당한 외부 제공을 하지 않을 것을 엄중히 서약합니다.
-              </strong><br>
-            </div>
-          </div>
-
-          <!-- 서명 패드 -->
-          <div class="signature-wrapper">
-            <h3 class="tab-label">서명 패드 (필수)*</h3>
-
-            <div class="signature-box">
-              <canvas id="signature-canvas"></canvas>
-
-              <div class="signature-hint">마우스 또는 손가락으로 위 영역에 서명해 주세요.</div>
-
-              <div class="signature-controls">
-                <button type="button" id="clear-signature" class="btn-ghost">서명패드 지우기</button>
-              </div>
-            </div>
-
-            <div id="signature-error" class="error-message">서명을 남겨주세요.</div>
-          </div>
-
-          <!-- 개인정보 동의 -->
-          <div class="consent-section">
-            <div class="consent-title">개인정보 수집·이용 동의<span class="required">*</span></div>
-
-            <div class="consent-text">
-              <strong>1. 수집·이용 목적</strong><br />
-              - 입주예정자협의회 운영 및 상기 위임사항 수행을 위한 정보 이용 및 안내<br /><br />
-
-              <strong>2. 수집 항목</strong><br />
-              - (필수) 성명, 생년월일(앞 6자리), 계약 동·호수, 휴대전화 번호, 이메일<br/>
-              - (선택) 입주자 카페 ID, 공동명의자 성명<br /><br />
-
-              <strong>3. 보유·이용 기간</strong><br />
-              - 위임장 제출일로부터 공동주택관리법 제 11조에 따른 입주자대표회의 구성 시까지 보관 후 파기<br /><br />
-
-              <strong>4. 동의 거부 권리 및 불이익</strong><br />
-              - 개인정보 수집·이용 동의는 필수이며, 
-              거부할 경우 입주예정자협의회 업무 사항 등에 대한 안내 및 통지가 누락될 수 있으며 이에 대한 불이익은 본인에게 귀속됩니다.
-            </div>
-
-            <div class="consent-checks">
-              <label class="checkbox-row">
-                <input type="checkbox" id="consent-privacy" />
-                <span>「개인정보 보호법」제22조에 따라 상기 개인정보 수집·이용에 대하여 동의합니다.</span>
-              </label>
-
-              <label class="checkbox-row">
-                <input type="checkbox" id="consent-delegation" />
-                <span>위임 내용에 동의하며, 본 위임장을 전자서명으로 제출합니다.</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- 제출 버튼 -->
-          <div class="submit-area">
-            <p>아래 버튼을 눌러 위임장을 제출해 주세요.</p>
-            <button type="submit" class="btn-submit">위임장 제출</button>
-            <div id="form-error" class="error-message"></div>
-
-            <div class="download-area">
-              전자적 제출보다 수기 작성이 편하신 경우, 아래 버튼을 통해 위임장을 다운로드 받으시고 메일주소로 보내주시기 바랍니다.
-              <br>
-              <a class="download-link" href="Power_of_Attorney.pdf" target="_blank" rel="noopener">서면 위임장 다운로드</a>
-            </div>
-          </div>
-
-        </form>
-      </main>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const form = document.getElementById("delegation-form");
-      const canvas = document.getElementById("signature-canvas");
-      const ctx = canvas.getContext("2d");
-
-      let isDrawing = false;
-      let lastX = 0;
-      let lastY = 0;
-      let hasSignature = false;
-
-      const signatureError = document.getElementById("signature-error");
-      const formError = document.getElementById("form-error");
-
-      function showError(el, msg) {
-        if (!el) return;
-        el.textContent = msg || el.textContent;
-        el.style.display = "block";
-      }
-
-      function hideError(el) {
-        if (!el) return;
-        el.style.display = "none";
-      }
-
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        const ratio = window.devicePixelRatio || 1;
-
-        canvas.width = Math.floor(rect.width * ratio);
-        canvas.height = Math.floor(220 * ratio);
-
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-      }
-
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-
-      function startDrawing(x, y) {
-        isDrawing = true;
-        hasSignature = true;
-        lastX = x;
-        lastY = y;
-      }
-
-      function drawLine(x, y) {
-        if (!isDrawing) return;
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        lastX = x;
-        lastY = y;
-      }
-
-      function getPosFromMouseEvent(e) {
-        const r = canvas.getBoundingClientRect();
-        return { x: e.clientX - r.left, y: e.clientY - r.top };
-      }
-
-      function getPosFromTouchEvent(touch) {
-        const r = canvas.getBoundingClientRect();
-        return { x: touch.clientX - r.left, y: touch.clientY - r.top };
-      }
-
-      canvas.addEventListener("mousedown", (e) => {
-        hideError(signatureError);
-        const p = getPosFromMouseEvent(e);
-        startDrawing(p.x, p.y);
-      });
-
-      canvas.addEventListener("mousemove", (e) => {
-        const p = getPosFromMouseEvent(e);
-        drawLine(p.x, p.y);
-      });
-
-      window.addEventListener("mouseup", () => { isDrawing = false; });
-      canvas.addEventListener("mouseleave", () => { isDrawing = false; });
-
-      canvas.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        hideError(signatureError);
-        const t = e.touches[0];
-        const p = getPosFromTouchEvent(t);
-        startDrawing(p.x, p.y);
-      }, { passive: false });
-
-      canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        const t = e.touches[0];
-        const p = getPosFromTouchEvent(t);
-        drawLine(p.x, p.y);
-      }, { passive: false });
-
-      canvas.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        isDrawing = false;
-      }, { passive: false });
-
-      document.getElementById("clear-signature").addEventListener("click", () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        hasSignature = false;
-        hideError(signatureError);
-      });
-
-      function exportSignatureCompressed() {
-        // 화면 좌표계 기준으로 내보내기(디바이스 픽셀 비율 영향 최소화)
-        const rect = canvas.getBoundingClientRect();
-        const srcW = Math.max(1, Math.floor(rect.width));
-        const srcH = 220;
-
-        const maxW = 800;
-        const outW = Math.min(srcW, maxW);
-        const outH = Math.max(1, Math.floor(outW * (srcH / srcW)));
-
-        const out = document.createElement("canvas");
-        out.width = outW;
-        out.height = outH;
-
-        const octx = out.getContext("2d");
-        octx.fillStyle = "#ffffff";
-        octx.fillRect(0, 0, outW, outH);
-
-        // 원본 캔버스(고해상도)를 out 크기에 맞춰 드로잉
-        octx.drawImage(canvas, 0, 0, outW, outH);
-
-        // JPEG로 압축
-        return out.toDataURL("image/jpeg", 0.8);
-      }
-
-      function validateRequiredFields() {
-        // 브라우저 기본 검증(포커스 튐) 대신 우리가 필요한 필수만 체크
-        const requiredSelectors = [
-          'input[name="full_name"]',
-          'input[name="dong"]',
-          'input[name="ho"]',
-          'input[name="birth"]',
-          'input[name="phone"]',
-          'input[name="email"]'
-        ];
-
-        for (const sel of requiredSelectors) {
-          const el = document.querySelector(sel);
-          if (!el) continue;
-          const v = (el.value || "").trim();
-          if (!v) return false;
-        }
-        return true;
-      }
-
-      form.addEventListener("submit", function (e) {
-        hideError(formError);
-        hideError(signatureError);
-        formError.textContent = "";
-
-        // 1) 제목 동적 세팅
-        const name = document.querySelector('input[name="full_name"]').value || "";
-        const dong = document.querySelector('input[name="dong"]').value || "";
-        const ho   = document.querySelector('input[name="ho"]').value || "";
-        document.getElementById("email-subject").value =
-          `힐스테이트 메디알레 전자 위임장 제출 - ${name} (${dong}동 ${ho}호)`;
-
-        // 2) 필수값 체크(브라우저 기본 포커스 이동 방지)
-        if (!validateRequiredFields()) {
-          e.preventDefault();
-          showError(formError, "필수항목을 입력해 주세요.");
-          return;
-        }
-
-        // 3) 동의 체크
-        if (!document.getElementById("consent-privacy").checked ||
-            !document.getElementById("consent-delegation").checked) {
-          e.preventDefault();
-          showError(formError, "모든 동의사항에 체크해 주세요.");
-          return;
-        }
-
-        // 4) 서명 체크
-        if (!hasSignature) {
-          e.preventDefault();
-          showError(signatureError);
-          return;
-        }
-
-        // 5) 서명 이미지 세팅(압축)
-        document.getElementById("signature-image").value = exportSignatureCompressed();
-      });
-    })();
-  </script>
-</body>
-</html>
+    document.getElementById("signature-image").value = exportSignature();
+  });
+})();
+</script>
