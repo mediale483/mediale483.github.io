@@ -769,7 +769,7 @@
       const srcW = Math.floor(rect.width);
       const srcH = 220;
 
-      const maxW = 800;
+      const maxW = 400;
       const outW = Math.min(srcW, maxW);
       const outH = Math.floor(outW * (srcH / srcW));
 
@@ -783,7 +783,7 @@
 
       octx.drawImage(canvas, 0, 0, outW, outH);
 
-      return out.toDataURL("image/jpeg", 0.82);
+      return out.toDataURL("image/jpeg", 0.65);
     }
 
     form.addEventListener("submit", function (e) {
