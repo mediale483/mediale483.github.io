@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <meta charset="UTF-8" />
+  <title>힐스테이트 메디알레 위임장 접수 확인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-logo">H</div>
+      <h1>힐스테이트 메디알레 위임장 접수 확인</h1>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">조회 안내</div>
+          <ul>
+            <li>계약자 성명 입력</li>
+            <li>계약 동·호수 입력</li>
+            <li>접수 여부 확인</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">조회 기준</div>
+          <ul>
+            <li>CLEAN_정리본 기준</li>
+            <li>전자/서면 접수 포함</li>
+            <li>최종 정리 내역 조회</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">유의사항</div>
+          <ul>
+            <li>입력값이 정확해야</li>
+            <li>정상 조회됩니다</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content">
+        <h2 class="section-title">접수 확인</h2>
+        <div class="info-block">
+          계약자 성명과 동·호수를 입력하시면 위임장 접수 여부를 확인하실 수 있습니다.
+        </div>
+
+        <div class="section-card">
+          <div class="info-row">
+            <div class="field-group">
+              <label for="dong">동 (필수)*</label>
+              <input type="text" id="dong" placeholder="예: 110" inputmode="numeric" />
+            </div>
+
+            <div class="field-group">
+              <label for="ho">호 (필수)*</label>
+              <input type="text" id="ho" placeholder="예: 201" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="name">계약자 성명 (필수)*</label>
+            <input type="text" id="name" placeholder="예: 조혜리" />
+            <div class="hint">CLEAN_정리본 기준으로 최종 접수 여부를 조회합니다.</div>
+          </div>
+
+          <div class="submit-area">
+            <button type="button" class="btn-submit" id="checkBtn">접수 확인</button>
+            <div id="form-error" class="error-message"></div>
+          </div>
+        </div>
+
+        <div class="section-card" style="margin-top:20px;">
+          <h3>조회 결과</h3>
+          <div id="resultBox" class="info-block" style="margin-bottom:0;">
+            동·호수와 계약자 성명을 입력한 뒤 접수 확인 버튼을 눌러 주세요.
+          </div>
+        </div>
+
+        <div class="download-area">
+          위임장 제출 페이지로 돌아가시려면 아래 버튼을 눌러 주세요.
+          <br>
+          <a class="download-link" href="./">위임장 제출 페이지로 이동</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const API_URL = "https://script.google.com/macros/s/AKfycbyy5vTlyhQhRYfGEn59WVFkhIvdzxUw-ztccDxKVYKa-xrRaeG7uvvtA8Ru4YIMLC_e/exec"; 
+
+      const dongEl = document.getElementById("dong");
+      const hoEl = document.getElementById("ho");
+      const nameEl = document.getElementById("name");
+      const checkBtn = document.getElementById("checkBtn");
+      const resultBox = document.getElementById("resultBox");
+      const formError = document.getElementById("form-error");
+
+      function onlyNumberInput(el) {
+        el.addEventListener("input", function () {
+          this.value = this.value.replace(/[^0-9]/g, "");
+        });
+      }
+
+      onlyNumberInput(dongEl);
+      onlyNumberInput(hoEl);
+
+      function setError(message) {
+        formError.textContent = message;
+        formError.style.display = "block";
+      }
+
+      function clearError() {
+        formError.textContent = "";
+        formError.style.display = "none";
+      }
+
+      function setResult(message, colorType) {
+        resultBox.textContent = message;
+
+        if (colorType === "ok") {
+          resultBox.style.color = "#1f7a34";
+          resultBox.style.fontWeight = "600";
+        } else if (colorType === "error") {
+          resultBox.style.color = "#a62931";
+          resultBox.style.fontWeight = "600";
+        } else {
+          resultBox.style.color = "#4a262a";
+          resultBox.style.fontWeight = "400";
+        }
+      }
+
+      async function checkSubmission() {
+        clearError();
+
+        const dong = dongEl.value.trim();
+        const ho = hoEl.value.trim();
+        const name = nameEl.value.trim();
+
+        if (!dong || !ho || !name) {
+          setError("동, 호, 계약자 성명을 모두 입력해 주세요.");
+          return;
+        }
+
+        checkBtn.disabled = true;
+        checkBtn.textContent = "조회 중...";
+        setResult("접수 내역을 확인하고 있습니다.", "default");
+
+        try {
+          const url =
+            `${API_URL}?dong=${encodeURIComponent(dong)}&ho=${encodeURIComponent(ho)}&name=${encodeURIComponent(name)}`;
+
+          const response = await fetch(url, { method: "GET" });
+          const data = await response.json();
+
+          if (data.status === "ok") {
+            let msg = "정상 접수되었습니다.";
+
+            if (data.접수상태) {
+              msg += `\n상태: ${data.접수상태}`;
+            }
+            if (data.제출일시) {
+              msg += `\n제출일시: ${data.제출일시}`;
+            }
+
+            setResult(msg, "ok");
+
+          } else if (data.status === "not_found") {
+            setResult(data.message || "접수 내역이 없습니다.", "error");
+
+          } else if (data.status === "name_mismatch") {
+            setResult(data.message || "동·호는 일치하지만 이름이 다릅니다.", "error");
+
+          } else if (data.status === "invalid") {
+            setResult(data.message || "입력값을 확인해 주세요.", "error");
+
+          } else {
+            setResult(data.message || "조회 중 오류가 발생했습니다.", "error");
+          }
+
+        } catch (err) {
+          console.error(err);
+          setResult("조회 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.", "error");
+        } finally {
+          checkBtn.disabled = false;
+          checkBtn.textContent = "접수 확인";
+        }
+      }
+
+      checkBtn.addEventListener("click", checkSubmission);
+
+      [dongEl, hoEl, nameEl].forEach(el => {
+        el.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            checkSubmission();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
