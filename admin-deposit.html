@@ -200,7 +200,9 @@
         const data = await response.json();
 
         if (!data.ok) {
-          resultBox.textContent = '오류 발생:\n' + data.message;
+          resultBox.textContent =
+            '오류 발생:\n' + data.message + '\n\n' +
+            'OCR 원문:\n' + (data.ocrText || '');
           return;
         }
 
