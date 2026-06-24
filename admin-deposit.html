@@ -129,7 +129,7 @@
       구글 시트로 전송합니다.
     </p>
 
-    <input type="file" id="depositImage" accept="image/*">
+    <input type="file" id="depositImage" accept=".pdf,image/*">
 
     <button type="button" id="uploadBtn" onclick="uploadDepositImage()">
       거래내역 추출하기
@@ -155,7 +155,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHjc-4JL-p2XKaJd5xDAZzXWX0Ry_maGpdSsxSJuzKCVdEv9hXsLvEVDTwxhvDxGnC/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxItcpexkSTTn77m8gkdzDWoa0BeakRF01YqnX4V5NRswM7tdjjy13HeWWJAvADR8s9/exec';
     
 
     async function uploadDepositImage() {
@@ -190,6 +190,7 @@
         const formData = new FormData();
         formData.append('action', 'extractDeposit');
         formData.append('fileName', file.name);
+        formData.append('mimeType', file.type || 'application/pdf');
         formData.append('imageBase64', base64.split(',')[1]);
 
         const response = await fetch(SCRIPT_URL, {
